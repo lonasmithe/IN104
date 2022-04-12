@@ -10,14 +10,41 @@ return fmaxf(fmaxf(Q[s][0],Q[s][1]),fmaxf(Q[s][2],Q[s][3]));
 }
 
 void Q_render(float** Q){
+	/*
      for (int i=0; i<rows; i++) {
          for (int j=0; j< cols; j++){
         //     printf(" %.1f ", max_a_Q(Q,j+i*cols));
                printf(" %.1f ", Q[j+i*cols][0]);
          }
          printf("\n");
+<<<<<<< HEAD
      }
      //
+=======
+     }*/
+     
+     for (int i=0; i<rows; i++) {
+     	for (int j=0; j<cols; j++) {
+     	
+     		if (max_a_Q(Q,j+i*cols)== Q[j+i*cols][0]){
+     			printf("h ");
+     		}
+     		
+     	 	else if (max_a_Q(Q,j+i*cols) == Q[j+i*cols][1]){
+     			printf("b ");
+     		}
+     		else if (max_a_Q(Q,j+i*cols) == Q[j+i*cols][2]){
+     			printf("g ");
+     		}
+     		else {//(max_a_Q(Q,j+i*cols) == Q[j+i*cols][3]){
+     			printf("d ");
+     		}
+     	}
+     	printf("\n");
+     }     		
+     		
+     /*
+>>>>>>> refs/remotes/origin/master
     printf("\n");
       for (int i=0; i<rows; i++) {
          for (int j=0; j< cols; j++){
@@ -46,7 +73,7 @@ void Q_render(float** Q){
            //    printf(" %.1f ", Q[j+i*cols][0]);
          }
          printf("\n");
-     }
+     }*/
 }
 
 
