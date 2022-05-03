@@ -13,10 +13,13 @@ void Q_render(float** Q){
 	/*
      for (int i=0; i<rows; i++) {
          for (int j=0; j< cols; j++){
-             printf(" %.1f ", max_a_Q(Q,j+i*cols));
-         	 //       printf(" %.1f ", Q[j+i*cols][0]);
+        //     printf(" %.1f ", max_a_Q(Q,j+i*cols));
+               printf(" %.1f ", Q[j+i*cols][0]);
          }
          printf("\n");
+<<<<<<< HEAD
+     }
+     //
      }*/
      
      for (int i=0; i<rows; i++) {
@@ -40,6 +43,7 @@ void Q_render(float** Q){
      }     		
      		
      /*
+>>>>>>> refs/remotes/origin/master
     printf("\n");
       for (int i=0; i<rows; i++) {
          for (int j=0; j< cols; j++){
@@ -61,8 +65,16 @@ void Q_render(float** Q){
          }
          printf("\n");
      }
-     printf("\n");*/
+     printf("\n");//
+          for (int i=0; i<rows; i++) {
+         for (int j=0; j< cols; j++){
+            printf(" %.1f ", max_a_Q(Q,j+i*cols));
+           //    printf(" %.1f ", Q[j+i*cols][0]);
+         }
+         printf("\n");
+     }*/
 }
+
 
 int taille_tableau;
 int nombre_actions;
@@ -82,6 +94,7 @@ float** somme(float** Q1, float** Q2, float** Q) {
 }
 return(Q);
 }
+
 
 int greedy_method(float epsilon,float** Q, int s){
 
@@ -136,7 +149,7 @@ float** training(float** Q,int n_ep,float alpha, float epsilon){
 	//int terminal = ; //Il faut récupérer la position du terminal
 	int etat_p=0; // nouvel état
 	float recompense=1; //recompense pour avoir commis une telle action
-	float gamma = 0.3; //Caractérise l'impatience, si c'est proche de 1 on voit sur le très long terme, proche de 0 on veut le court terme 
+	float gamma = 0.6; //Caractérise l'impatience, si c'est proche de 1 on voit sur le très long terme, proche de 0 on veut le court terme 
 
 	while(ep_actuel<n_ep){
 		
@@ -175,8 +188,8 @@ Q_render(Q);
 			etat = start_col+(start_row)*cols;
 		tirage.done=0;
 		epsilon = 0;
-		//int n=0;
-	/*while(!tirage.done){//Il faut récupérer les états terminaux / On teste afin de savoir si on est sur un état terminal ou pas
+		int n=0;
+	while(!tirage.done){//Il faut récupérer les états terminaux / On teste afin de savoir si on est sur un état terminal ou pas
 		//printf("Eh oh, eh oh on rentre du boulot\n");
 		
 		//direction = env_action_sample();
@@ -199,7 +212,7 @@ Q_render(Q);
 			maze[tirage.new_row][tirage.new_col] ='.';
 		//	maze_render();
 			n++;
-		}*/
+		}
 	
 return Q;
 }
@@ -309,9 +322,9 @@ int main(){
 	int nombre_actions = 4; // G D H B 
 	int taille_tableau = rows*cols; // Récupérer cela via le fichier // Si on 
 	printf("taille tableau = %d\n",taille_tableau);
-	float alpha = 0.4; //Valeur choisi au hasard
-	float epsilon = 0.3; //Taux d'apprentissage
-	int n_ep = 800;
+	float alpha = 0.8; //Valeur choisi au hasard
+	float epsilon = 0.05; //Taux d'apprentissage
+	int n_ep = 2000;
 
 float **Q1 = malloc(sizeof(float*)*taille_tableau);
 printf("ça marche");
