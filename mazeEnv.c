@@ -100,7 +100,7 @@ envOutput maze_step(action a){
     }
     
     if((state_row == goal_row) && (state_col == goal_col)){
-       stepOut.reward = 1000;
+       stepOut.reward = 10;
        stepOut.done   = 1;
     }else if(maze[state_row][state_col] == '+'){  
         //printf("Muuuuuuuuuur\n");

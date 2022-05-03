@@ -43,8 +43,8 @@ void Q_render(float** Q){
      	printf("\n");
      }    */ 		
      		
-     /*
->>>>>>> refs/remotes/origin/master
+     
+//>>>>>>> refs/remotes/origin/master
     printf("\n");
       for (int i=0; i<rows; i++) {
          for (int j=0; j< cols; j++){
@@ -73,7 +73,7 @@ void Q_render(float** Q){
            //    printf(" %.1f ", Q[j+i*cols][0]);
          }
          printf("\n");
-     }*/
+     }
 }
 
 
@@ -127,6 +127,7 @@ float** training(float** Q,int n_ep,float alpha, float epsilon){
 	int etat=0;
 	int n = 0;
 	enum action direction;
+	enum action direction_bis;
 	struct envOutput tirage;
 	//int terminal = ; //Il faut récupérer la position du terminal
 	int etat_p=0; // nouvel état
@@ -140,9 +141,11 @@ float** training(float** Q,int n_ep,float alpha, float epsilon){
 		tirage.done=0;
 		//printf("Colonne et Ligne de départ :%d ; %d\n",start_col,start_row);
 		
+
+			direction = greedy_method(epsilon,Q,etat);
 		while(!tirage.done){//Il faut récupérer les états terminaux / On teste afin de savoir si on est sur un état terminal ou pas
 		
-			direction = greedy_method(epsilon,Q,etat);
+			
 			tirage = maze_step(direction);//Choisi une action, puis fais un pas 
 			etat_p = tirage.new_col+(tirage.new_row)*cols;
 		//	printf("Colonne et Ligne actuel :%d ; %d\n",tirage.new_col,tirage.new_row);
@@ -154,10 +157,12 @@ float** training(float** Q,int n_ep,float alpha, float epsilon){
 			//printf("ça va coincer\n");
 			// vérifier si l'état est possible 
 	//		printf("Action = %d Etat = %d Etat_p = %d Ligne %d Cols %d\n",direction,etat,etat_p,tirage.new_row,tirage.new_col);
-			
-			Q[etat][direction]=Q[etat][direction]*(1-alpha) + alpha*(recompense+gamma*max_a_Q(Q,etat_p));
+			direction_bis = greedy_method(epsilon,Q,etat_p);
+			Q[etat][direction]=Q[etat][direction]*(1-alpha) + alpha*(recompense+gamma*Q[etat_p][direction_bis]);
+
 //printf("ça passe ?!\n");
-			if(tirage.done==0){etat = etat_p;}
+			if(tirage.done==0){etat = etat_p;
+				direction=direction_bis;}
 			n++;
 		//	printf("\n\n");
 		}
@@ -169,34 +174,34 @@ Q_render(Q);
 		maze_reset();
 		printf("\n\n");
 		ep_actuel++;
-	}printf("Aaaaaaaaaaaaaaaaaaaaaaaah\n");
+	}printf("LAncement de Sarsa\n");
 			etat = start_col+(start_row)*cols;
 		tirage.done=0;
 		epsilon = 0;
 	 n=0;
-	while(!tirage.done){//Il faut récupérer les états terminaux / On teste afin de savoir si on est sur un état terminal ou pas
-		//printf("Eh oh, eh oh on rentre du boulot\n");
+			direction = greedy_method(epsilon,Q,etat);
+		while(!tirage.done){//Il faut récupérer les états terminaux / On teste afin de savoir si on est sur un état terminal ou pas
 		
-		//direction = env_action_sample();
-		direction = greedy_method(epsilon,Q,etat);
-		tirage = maze_step(direction);//Choisi une action, puis fais un pas 
-
+			
+			tirage = maze_step(direction);//Choisi une action, puis fais un pas 
 			etat_p = tirage.new_col+(tirage.new_row)*cols;
 		//	printf("Colonne et Ligne actuel :%d ; %d\n",tirage.new_col,tirage.new_row);
 			//action = greedy_method(epsilon);//Choisir une action
 			//action=
 			recompense=tirage.reward;
+		//	printf("La recompense pour ce move %.1f\n",recompense);
 			//Récupère récompense et le nouvel état qui a évolué car on a choisi une action
 			//printf("ça va coincer\n");
 			// vérifier si l'état est possible 
 	//		printf("Action = %d Etat = %d Etat_p = %d Ligne %d Cols %d\n",direction,etat,etat_p,tirage.new_row,tirage.new_col);
-			Q[etat][direction]=Q[etat][direction]*(1-alpha) + alpha*(recompense+gamma*Q[etat_p][direction]);
+			direction_bis = greedy_method(epsilon,Q,etat_p);
+			Q[etat][direction]=Q[etat][direction]*(1-alpha) + alpha*(recompense+gamma*Q[etat_p][direction_bis]);
+
 //printf("ça passe ?!\n");
-			etat = etat_p;
-			//add_crumbs2();
-			maze[tirage.new_row][tirage.new_col] ='.';
-		//	maze_render();
+			if(tirage.done==0){etat = etat_p;
+				direction=direction_bis;}
 			n++;
+		//	printf("\n\n");
 		}
 
 		printf("On est arrive au trésor en %d itération\n",n);
@@ -221,7 +226,7 @@ int main(){
 	printf("taille tableau = %d\n",taille_tableau);
 	float alpha = 0.8; //Valeur choisi au hasard
 	float epsilon = 0.05; //Taux d'apprentissage
-	int n_ep = 20000;
+	int n_ep = 800;
 
 float **Q = malloc(sizeof(float*)*taille_tableau);// Ligne 1 Ligne 2 ... Ligne n (chaque ligne fait p colonnes)
 //int T[n][n];
@@ -242,7 +247,7 @@ for(int i=0;i<taille_tableau;i++){
 
 		if(i!=j){
 
-			Q[i][j]=0; //Initialisation de Q à 0
+			Q[i][j]=pow(-1,rand()%2)*(rand()%10); //Initialisation de Q à 0
 		}
 
 	}
@@ -252,6 +257,7 @@ for(int i=0;i<taille_tableau;i++){
 
 //entrainement
 
+
 Q = training(Q,n_ep,alpha,epsilon); // Où Q représente le nombre d'épisodes 
 
 epsilon = epsilon+1;
@@ -259,14 +265,16 @@ alpha = alpha +1;
 n_ep = n_ep +1;
 Q_render(Q);
 maze_render();
+
 for(int i=0;i<taille_tableau;i++){
 
 free(Q[i]);
+
 }
 
 free(Q);
 
-printf("Je crois bien que c'est fini, est ce que ça a fonctionné ooooooh ?\n\n Henri t'es trop fort !!!");
+printf("Je crois bien que c'est fini, est ce que ça a fonctionné ooooooh ?\n\n Henri t'es trop fort !!! Je t'aime ! On est dans le programme");
 // Tableau de tableau
 
 

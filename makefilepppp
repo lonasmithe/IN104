@@ -1,4 +1,4 @@
-prog : dfs.o functions.o mazeEnv.o td2_sarsa.o
+prog2 : dfs.o functions.o mazeEnv.o td2_sarsa.o
 	gcc -o prog dfs.o functions.o mazeEnv.o td2_sarsa.o -lm
 
 dfs.o : dfs.c mazeEnv.h
@@ -15,3 +15,4 @@ td2_sarsa.o : td2_sarsa.c td2.h mazeEnv.h
 
 clean :
 	rm -f prog dfs.o functions.o mazEnv.o td2_sarsa.o
+
