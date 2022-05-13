@@ -66,6 +66,8 @@ int id_pawn_on_knowncase(int x, int y, int e);
 
 int random_position_with_a_pawn(int e);
 
+void L_render(int e);
+
 
 envOutput draughtboard_step(action a, int col_position, int row_position, int team); 
 

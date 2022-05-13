@@ -8,7 +8,7 @@
 int alloc_Q(){
 
 taille_tableau=1000;
-nombre_actions=4*50;
+nombre_actions=2*50;
 Q = malloc(sizeof(int*)*taille_tableau);
 	if(Q==NULL){
 	return 1;// exit 1 si fonction
@@ -70,20 +70,22 @@ int stockage;
 
     tirage.end=0;
 while(tirage.end==0){
-	action_rand=rand()%4;
+	action_rand=rand()%2;
 	stockage = random_position_with_a_pawn(e);
+	//printf("%d avec n_3 = %d\n",stockage,n_3);
+	//L_render(e);
 	col_rand=(stockage%(cols));
 	row_rand=(stockage-(stockage%(cols)))/cols;
 	tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
 	n++;
-	choix=action_rand+4*(col_rand/2+row_rand*5);
+	choix=action_rand+2*(col_rand/2+row_rand*5);
 }
 
 printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n);
-printf("On est sorti de act_random\n");
+
 }
 void greedy_method(){
-	printf("On est dans Greedy");
+	
 
 tirage.end=0;
 
@@ -130,7 +132,7 @@ void training(){
 
 tirage.done=0;
 n_iter=0;
-n_boucle=1;
+n_boucle=10;
 
 
 	while(n_iter<n_boucle){
@@ -141,7 +143,7 @@ n_boucle=1;
 		greedy_method();
 		if(choix!=-1){
 		
-			tirage=draughtboard_step(choix%4, ((choix-(choix%4))/4)%5,((choix-(choix-(choix%4))/4)%5)/10,1);
+			tirage=draughtboard_step(choix%2, ((choix-(choix%2))/2)%5,((choix-(choix-(choix%2))/2)%5)/10,1);
 		
 		}else{
 			act_random(1);
@@ -150,20 +152,28 @@ n_boucle=1;
 		actualise_etat();
 		printf("etat = %d choice = %d\n",etat, choix);
 		draughtboard_render(maze);
-		printf("Ohoh on a changé de case");
-
+		
+printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
 Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p));
+if(tirage.done!=1){
+
+
+
 if(tirage.end==1){
 	tirage.end=0;
 	act_random(0);
 
 	actualise_etat();
+
 }
-printf("On a fait un tour !");
+}
+printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
 
 }
 n_iter++;
+tirage.done=0;
 draughtboard_make();
+actualise_etat();
 
 }
 }
