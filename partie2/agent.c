@@ -8,7 +8,7 @@
 int alloc_Q(){
 
 taille_tableau=1000;
-nombre_actions=4*20;
+nombre_actions=4*50;
 Q = malloc(sizeof(int*)*taille_tableau);
 	if(Q==NULL){
 	return 1;// exit 1 si fonction
@@ -66,29 +66,38 @@ return ref;
 
 void act_random(int e){
 int n=0;
-    
+int stockage;
+
     tirage.end=0;
 while(tirage.end==0){
-	tirage=draughtboard_step((enum action)(rand()%(4)),rand()%10,rand()%10,e);
+	action_rand=rand()%4;
+	stockage = random_position_with_a_pawn(e);
+	col_rand=(stockage%(cols));
+	row_rand=(stockage-(stockage%(cols)))/rows;
+	tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
 	n++;
+	choix=action_rand+4*(col_rand/2+row_rand*5);
 }
 
 printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n);
-
+printf("On est sorti de act_random\n");
 }
 void greedy_method(){
+	printf("On est dans Greedy");
+
 tirage.end=0;
 
 	//algorithme permettant de choisir une action
 //enum action direction;
 if(rand()%101<epsilon*100){
 
+
 choix=-1;
 //return (enum action)(rand() % number_actions);	
 
 }
 else{
-	while(tirage.end==0){
+	
 int h = rand()%nombre_actions;
 float ref = Q[etat][h];
 choix = h;
@@ -106,13 +115,13 @@ if(Q[etat][i]>ref){
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //recevoir la récompense
-}
+
 }
 }
 void actualise_etat(){
-etat=find_position(maze);
-if(etat==-1){
-	etat=curseur;
+etat_p=find_position(maze);
+if(etat_p==-1){
+	etat_p=curseur;
 	fill_storage(maze);
 }	
 }
@@ -130,18 +139,25 @@ tirage.done=0;
 		greedy_method();
 		if(choix!=-1){
 		
-			tirage=draughtboard_step(choix);
+			tirage=draughtboard_step(choix%4, ((choix-(choix%4))/4)%5,((choix-(choix-(choix%4))/4)%5)/10,1);
 		
 		}else{
 			act_random(1);
 		}
-actualise_etat();
-Q[etat][choice]=Q[etat][choice]*(1-alpha) + alpha*(recompense+gammma*max_a_Q(Q,etat_p));
+		etat=etat_p;
+		//actualise_etat();
+		printf("etat = %d choice = %d\n",etat, choix);
+		draughtboard_render(maze);
+		printf("Ohoh on a changé de case");
+
+Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p));
 if(tirage.end==1){
 	tirage.end=0;
 	act_random(0);
-	actualise_etat();
+
+	//actualise_etat();
 }
+printf("On a fait un tour !");
 
 }
 
@@ -173,6 +189,9 @@ cols=10;
 epsilon=0.3;
 alpha=0.4;
 gammma=0.4;
+nb_pawn=20;
+    n_3=nb_pawn;
+    n_1=nb_pawn;
 alloc_draughtboard();
 draughtboard_make();
 //draughtboard_render();

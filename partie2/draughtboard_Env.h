@@ -5,6 +5,10 @@
 #include <stdlib.h>
 
 int** maze;//renommer draughtboard
+int* L_1;
+int* L_3;
+int n_1;
+int n_3;
 int** visited;
 int rows;
 int cols;//possibilité d'en mettre que 5 pour gagner en espace de stockage mais moins instinctif
@@ -14,6 +18,7 @@ int state_row;
 int state_col;
 int goal_row;
 int goal_col;
+int nb_pawn;
 
 /*enum terrain{
     unknown,
@@ -56,6 +61,11 @@ void draughtboard_make();
 void draughtboard_render(int** D); 
 
 void draughtboard_reset();
+
+int id_pawn_on_knowncase(int x, int y, int e);
+
+int random_position_with_a_pawn(int e);
+
 
 envOutput draughtboard_step(action a, int col_position, int row_position, int team); 
 

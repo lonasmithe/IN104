@@ -11,10 +11,11 @@ struct envOutput tirage;
 enum action choix;
 int** Q;
 int etat;
+int etat_p;
 float epsilon;
 float alpha;
 float gammma;
-
+int action_rand,col_rand,row_rand;
 
 int alloc_Q();
 void free_Q();
