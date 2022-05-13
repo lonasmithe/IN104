@@ -53,7 +53,7 @@ void free_draughtboard();
 
 void draughtboard_make();
 
-void draughtboard_render(); 
+void draughtboard_render(int** D); 
 
 void draughtboard_reset();
 

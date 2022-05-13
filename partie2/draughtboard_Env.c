@@ -1,5 +1,6 @@
-#include "draughtboard_Env.h" 
+#include "draughtboard_Env.h"
 #include "agent.h"
+#include "storage.h"
 void alloc_draughtboard(){
      maze = malloc(rows * sizeof(int*));
 
@@ -53,10 +54,10 @@ void draughtboard_make(){
 }
 
 
-void draughtboard_render(){
+void draughtboard_render(int** D){
      for (int i=rows-1; i>=0; i--) {
          for (int j=0; j< cols; j++){
-             printf("%d ", maze[i][j]);
+             printf("%d ", D[i][j]);
          }
          printf("\n");
      }
@@ -78,6 +79,7 @@ envOutput draughtboard_step(action a,int col_position,int row_position,int team)
     envOutput stepOut;
     stepOut.combo=0;
     stepOut.end=0;
+    stepOut.done=0;
     stepOut.new_col=col_position;
 stepOut.new_row=row_position;
 
@@ -180,6 +182,10 @@ maze[row_position+1][col_position+1]=0;
             stepOut.end=0;
         } 
     }
+if(row_position==9){
+stepOut.reward = 10;
+stepOut.done = 1;
+}
 }else{
     printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
 }
@@ -284,9 +290,14 @@ maze[row_position-1][col_position+1]=0;
             stepOut.end=0;
         } 
     }
+    if(row_position==0){
+stepOut.reward = -10;
+stepOut.done = 1;
+}
 }else{
     printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
 }
+
 
     
 
