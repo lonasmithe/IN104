@@ -73,7 +73,7 @@ while(tirage.end==0){
 	action_rand=rand()%4;
 	stockage = random_position_with_a_pawn(e);
 	col_rand=(stockage%(cols));
-	row_rand=(stockage-(stockage%(cols)))/rows;
+	row_rand=(stockage-(stockage%(cols)))/cols;
 	tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
 	n++;
 	choix=action_rand+4*(col_rand/2+row_rand*5);
@@ -129,9 +129,11 @@ void training(){
 
 
 tirage.done=0;
+n_iter=0;
+n_boucle=1;
 
 
-	//while(i<10){
+	while(n_iter<n_boucle){
 	while(tirage.done==0){
 
 
@@ -145,7 +147,7 @@ tirage.done=0;
 			act_random(1);
 		}
 		etat=etat_p;
-		//actualise_etat();
+		actualise_etat();
 		printf("etat = %d choice = %d\n",etat, choix);
 		draughtboard_render(maze);
 		printf("Ohoh on a changé de case");
@@ -155,14 +157,15 @@ if(tirage.end==1){
 	tirage.end=0;
 	act_random(0);
 
-	//actualise_etat();
+	actualise_etat();
 }
 printf("On a fait un tour !");
 
 }
+n_iter++;
+draughtboard_make();
 
-
-
+}
 }
 void double_dumb(){
 

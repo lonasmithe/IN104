@@ -16,6 +16,8 @@ float epsilon;
 float alpha;
 float gammma;
 int action_rand,col_rand,row_rand;
+int n_boucle;
+int n_iter;
 
 int alloc_Q();
 void free_Q();
