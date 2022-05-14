@@ -9,6 +9,8 @@ void alloc_draughtboard(){
      }
      L_1 = malloc(20*sizeof(int));
      L_3 = malloc(20*sizeof(int));
+     attaquable_1 = malloc(20*sizeof(int));
+     attaquable_3 = malloc(20*sizeof(int));
 }
 
 
@@ -39,8 +41,63 @@ printf("La fonction ne marche pas\n");
 return -1;
 }
 
+void add_attaquable(int x, int y, int e){
+
+    if(e==1){
+        a_1++;
+        attaquable_1[a_1]=x+y*cols;
+
+    }
+        if(e==0){
+        a_3++;
+        attaquable_3[a_3]=x+y*cols;
+
+    }
+
+}
+void update_attaquable_move(int x_new,y_new,x_old,y_old,e){
+
+    //attaquable sous 2 conditions
+    //1 ennemis à coté
+    //La case derrière l'ennemie est libre
+
+    if(e==1){
+        if(x>1&&y<rows-2){
+        if(maze[x_new-1][y_new+1]==3&&maze[x_new-2][y_new+2]==0){
+            add_attaquable(x_new,y_new,e);
+        }
+        }
+        if(x_new<cols-2&&y_new<rows-2){
+        if(maze[x_new+1][y_new+1]==3&&maze[x_new+2][y_new+2]==0){
+            add_attaquable(x_new,y_new,e);
+        }
+        }
+                if(x_new>0&&y_new>0&&x_new<rows-1&&y_new<cols-1){
+        if(maze[x_new-1][y_new+1]==3&&maze[x_new+1][y_new-1]==0){
+            add_attaquable(x_new-1,y_new+1,0);
+        }
+                if(maze[x_new+1][y_new+1]==3&&maze[x_new-1][y_new-1]==0){
+            add_attaquable(x_new+1,y_new+1,0);
+        }
+        }
+
+if(x_new>x_old){
+    
+}
+
+    }
+
+
+}
 void draughtboard_make(){
-        n_3=nb_pawn;
+
+for(int i=0;i<20;i++){
+    attaquable_1[i]=-1;
+    attaquable_3[i]=-1;
+}
+a_1=-1;
+a_3=-1;
+    n_3=nb_pawn;
     n_1=nb_pawn;
      int c=0;
      for(int i=0;i<10;i++){

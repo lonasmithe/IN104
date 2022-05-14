@@ -7,6 +7,10 @@
 int** maze;//renommer draughtboard
 int* L_1;
 int* L_3;
+int* attaquable_1;
+int* attaquable_3;
+int a_1;
+int a_3;
 int n_1;
 int n_3;
 int** visited;
@@ -65,6 +69,8 @@ void draughtboard_reset();
 int id_pawn_on_knowncase(int x, int y, int e);
 
 int random_position_with_a_pawn(int e);
+
+void add_attaquable(int x, int y, int e);
 
 void L_render(int e);
 
