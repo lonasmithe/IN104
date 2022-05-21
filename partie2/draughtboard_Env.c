@@ -15,11 +15,25 @@ void alloc_draughtboard(){
 
 
 void free_draughtboard(){
-for(int i=0;i<cols;i++){
+
+
+for(int i=0;i<rows-1;i++){
 
 free(maze[i]);
+
 }
 
+printf("Les colonnes de maze sont free\n");
+
+//free(L_1);
+//free(L_3);
+printf("La réserve des pions est free\n");
+
+free(attaquable_3);
+free(attaquable_1);
+
+
+printf("Reste plus que le maze\n");
 
 free(maze);
 
@@ -55,36 +69,125 @@ void add_attaquable(int x, int y, int e){
     }
 
 }
-void update_attaquable_move(int x_new,y_new,x_old,y_old,e){
+
+int is_block(int e){
+    printf("Nous sommes à la %d opérations",n_operation);
+    int i;
+    int j;
+
+if(e==1){
+    for(int k=0;k<n_1;k++){
+
+    i=(L_1[k]%(cols));///colonne
+    j=(L_1[k]-(L_1[k]%(cols)))/cols; //ligne
+   if(maze[j][i]==1){                if(i>1&&j<rows-2){
+        if(maze[j+1][i-1]==3&&maze[j+2][i-2]==0){
+            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+            return 0;
+        }
+        }
+        if(i<cols-2&&j<rows-2){
+        if(maze[j+1][i+1]==3&&maze[j+2][i+2]==0){
+           
+           printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+           return 0;
+        }
+        }
+        if(i<cols-1&&j<rows-1){
+        if(maze[j+1][i+1]==0){
+            printf("Ouf le pion en %d ; %d peut se déplacer à droite\n",i+1,j+1);
+           return 0;
+        }
+        }
+        if(i>0&&j<rows-1){
+        if(maze[j+1][i-1]==0){
+            printf("Ouf le pion en %d ; %d peut se déplacer à gauche \n",i,j);
+            return 0;
+        }
+        }}
+
+    }
+
+}
+if(e==0){
+
+    for(int k=0;k<n_3;k++){
+
+    i=(L_3[k]%(cols));
+    j=(L_3[k]-(L_3[k]%(cols)))/cols;
+    if(maze[j][i]==3){
+                        if(i>1&&j>1){
+        if(maze[j-1][i-1]==1&&maze[j-2][i-2]==0){
+            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+            return 0;
+        }
+        }
+        if(i<cols-2&&j>1){
+        if(maze[j-1][i+1]==1&&maze[j-2][i+2]==0){
+            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+           return 0;
+        }
+        }
+                    if(i>0&&j>0){
+        if(maze[j-1][i-1]==0){
+            printf("Ouf le pion en %d ; %d peut se deplacer\n",i,j);
+            return 0;
+        }
+        }
+        if(i<cols-1&&j>0){
+        if(maze[j-1][i+1]==0){
+            printf("Ouf le pion en %d ; %d peut se deplacer\n",i,j);
+           return 0;
+        }
+        }
+    }
+    }
+}
+
+return 1;
+}
+void update_attaquable_move(int x_new,int y_new,int x_old, int y_old,int e){
 
     //attaquable sous 2 conditions
     //1 ennemis à coté
     //La case derrière l'ennemie est libre
 
     if(e==1){
-        if(x>1&&y<rows-2){
+        if(x_new>1&&y_new<rows-2){
         if(maze[x_new-1][y_new+1]==3&&maze[x_new-2][y_new+2]==0){
-            add_attaquable(x_new,y_new,e);
+            ////add_attaquable(x_new,y_new,e);
         }
         }
         if(x_new<cols-2&&y_new<rows-2){
         if(maze[x_new+1][y_new+1]==3&&maze[x_new+2][y_new+2]==0){
-            add_attaquable(x_new,y_new,e);
+            //add_attaquable(x_new,y_new,e);
         }
         }
                 if(x_new>0&&y_new>0&&x_new<rows-1&&y_new<cols-1){
         if(maze[x_new-1][y_new+1]==3&&maze[x_new+1][y_new-1]==0){
-            add_attaquable(x_new-1,y_new+1,0);
+            //add_attaquable(x_new-1,y_new+1,0);
         }
                 if(maze[x_new+1][y_new+1]==3&&maze[x_new-1][y_new-1]==0){
-            add_attaquable(x_new+1,y_new+1,0);
+            //add_attaquable(x_new+1,y_new+1,0);
         }
         }
 
 if(x_new>x_old){
-    
+
+    if(x_new>1&&y_new<rows-2){
+        if(maze[x_old-1][y_old+1]==1&&maze[x_old-2][y_old+2]==3){
+            //add_attaquable(x_old-2,y_old-2,0);
+        }
+    }
 }
 
+if(x_new<x_old){
+    if(x_new<cols-2&&y_new<rows-2){
+        if(maze[x_old+1][y_old+1]==1&&maze[x_old+2][y_old+2]==3){
+            //add_attaquable(x_old+2,y_old+2,0);
+        }
+    }
+}
     }
 
 
@@ -177,6 +280,8 @@ int random_position_with_a_pawn(int e){
 
 envOutput draughtboard_step(action a,int col_position,int row_position,int team){
 
+  //  printf("Le bug se situe là dedans !\n");
+
   //  printf("Right = %d\n",right);
     
    // int sens;
@@ -208,7 +313,7 @@ printf("Au tour de la team %d de jouer",team);
         }
         else{
             printf("Impossible de se déplacer la case n'est pas vide !\n");
-                                                   if(col_position<8&&row_position<9){
+                                                   if(col_position<8&&row_position<8){
                                             if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
                                                 L_3[id_pawn_on_knowncase(col_position+1,row_position+1,0)]=L_3[n_3-1];
@@ -257,7 +362,7 @@ tirage.reward=1;
         }
         else{
             printf("Impossible de se déplacer la case n'est pas vide !\n");
-                                                        if(col_position>1&&row_position<9){
+                                                        if(col_position>1&&row_position<8){
                                                             if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
                                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
                                                                 L_3[id_pawn_on_knowncase(col_position-1,row_position+1,0)]=L_3[n_3-1];
@@ -292,7 +397,7 @@ tirage.reward=1;
     }
         else if (a==eat_left){
 
-    if(col_position>1&&row_position<9){
+    if(col_position>1&&row_position<8){
         if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
             L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
             L_3[id_pawn_on_knowncase(col_position-1,row_position+1,0)]=L_3[n_3-1];
@@ -321,7 +426,7 @@ tirage.reward=1;
     }
         else if (a==eat_right){
 
-    if(col_position<8&&row_position<9){
+    if(col_position<8&&row_position<8){
         if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
             L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
             L_3[id_pawn_on_knowncase(col_position+1,row_position+1,0)]=L_3[n_3-1];
@@ -554,6 +659,11 @@ stepOut.done = 1;
 draughtboard_render(maze);
 
 stepOut.choice=a;
+if(is_block(team)==1){
+    stepOut.done = 1;
+    stepOut.end=1;
+    stepOut.reward = -9;
+}
 
     //à modifier
     /*if((state_row == goal_row) && (state_col == goal_col)){
@@ -573,6 +683,8 @@ stepOut.choice=a;
     stepOut.new_col = state_col;
     stepOut.new_row = state_row; 
 //printf("Ligne : %d Colonne : %d\n",state_row,state_col);*/
+
+  //printf("en fait non !\n");
 
    return stepOut;
 }

@@ -5,11 +5,15 @@
 #include <stdlib.h>
 #include <time.h>
 
+int victoire;
+int egalite;
+int n_operation;
 int taille_tableau;
 int nombre_actions;
 struct envOutput tirage;
 enum action choix;
 int** Q;
+int* Test;
 int etat;
 int etat_p;
 float epsilon;

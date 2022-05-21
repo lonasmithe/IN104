@@ -4,7 +4,7 @@
 
 void create_storage(){
 
-n_position=1000;
+n_position=10000;
 curseur=0;
 
 	storage = malloc(n_position * sizeof(int*));

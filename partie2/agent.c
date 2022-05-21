@@ -7,9 +7,18 @@
 
 int alloc_Q(){
 
-taille_tableau=1000;
+taille_tableau=10000;
 nombre_actions=2*50;
 Q = malloc(sizeof(int*)*taille_tableau);
+
+/*Test = malloc(sizeof(int)*5);
+Test[1]=Test[2];
+for(int i=0;i<1000;i++){
+	printf("d");
+}
+free(Test);
+
+*/
 	if(Q==NULL){
 	return 1;// exit 1 si fonction
 }
@@ -32,6 +41,7 @@ void free_Q(){
 
 free(Q[i]);
 }free(Q);
+
 }
 
 
@@ -65,7 +75,7 @@ return ref;
 }
 
 void act_random(int e){
-int n=0;
+n_operation=0;
 int stockage;
 
     tirage.end=0;
@@ -77,12 +87,12 @@ while(tirage.end==0){
 	col_rand=(stockage%(cols));
 	row_rand=(stockage-(stockage%(cols)))/cols;
 	tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
-	n++;
+	n_operation++;
 	choix=action_rand+2*(col_rand/2+row_rand*5);
 }
 
-printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n);
-
+printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n_operation);
+n_operation=0;
 }
 void greedy_method(){
 	
@@ -128,15 +138,16 @@ if(etat_p==-1){
 }	
 }
 void training(){
-
-
+victoire=0;
+egalite=0;
 tirage.done=0;
 n_iter=0;
-n_boucle=10;
+n_boucle=100;
 
 
 	while(n_iter<n_boucle){
 	while(tirage.done==0){
+
 
 
 
@@ -170,12 +181,19 @@ if(tirage.end==1){
 printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
 
 }
+if(tirage.reward>0){
+	victoire++;
+}
+if(tirage.reward==-9){
+	egalite++;
+}
 n_iter++;
 tirage.done=0;
 draughtboard_make();
 actualise_etat();
 
 }
+printf("Les blancs ont gagnés : %d matchs sur %d et on fait %d egalités\n", victoire,n_iter, egalite);
 }
 void double_dumb(){
 
@@ -226,9 +244,12 @@ printf("%d\n",e);
 
 create_storage();
 training();
+
 draughtboard_render(maze);
 
 free_storage();
+printf("Ce free s'est bien passé\n");
+
 printf("%d",e);
 //draughtboard_render();
 /*act_random(0);
@@ -249,6 +270,9 @@ act_random(1);
 //printf("%f\n",tirage.reward);
 draughtboard_render();*/
 free_Q();
+
+printf("Ce free s'est aussi bien passé\n");
+
 free_draughtboard();
 
 }
