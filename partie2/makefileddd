@@ -1,0 +1,11 @@
+prog : agent.o draughboard_Env.o
+	gcc -o prog dfs.o functions.o mazeEnv.o td2_sarsa.o -lm
+
+draughtboard_Env.o : draughtboard_Env.c draughtboard_Env.h 
+	gcc -c -Wall -Werror -Wfatal-errors mazeEnv.c
+
+agent.o : agent.c draughtboard_Env.h
+	gcc -c -Wall -Werror -Wfatal-errors agent.c -lm
+
+clean :
+	rm -f prog draughtboard_Env.o agent.o
