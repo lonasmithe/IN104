@@ -148,7 +148,7 @@ victoire=0;
 egalite=0;
 tirage.done=0;
 n_iter=0;
-n_boucle=1000;
+n_boucle=2000;
 
 
 	while(n_iter<n_boucle){
@@ -156,7 +156,7 @@ n_boucle=1000;
 		etat_p=0;
 	while(tirage.done==0){
 
-
+//draughtboard_render(maze);
 etat=etat_p;
 
 		greedy_method();
@@ -232,12 +232,15 @@ int main(){
 srand( time( NULL ) );
 rows=8;
 cols=8;
-epsilon=0.3;
+epsilon=0.1;
 alpha=0.4;
-gammma=0.4;
+gammma=0.8;
 //nb_pawn=cols/2;
 if(cols==8&&rows==8){
-	nb_pawn=12;
+	nb_pawn=4;
+}
+if(cols==4&&rows==8){
+	nb_pawn=4;
 }
 if(cols==10&&rows==10){
 	nb_pawn=20;
@@ -247,7 +250,7 @@ deja_vu=0;
     n_1=nb_pawn;
     n_position_reconnu=0;
     n_passage_dans_le_dico=0;
-    seuil=100; // nombre de coup au bout duquel on va jouer un coup possible donnée par is block (valable pour l'équipe 0 uniquement)
+    seuil=40; // nombre de coup au bout duquel on va jouer un coup possible donnée par is block (valable pour l'équipe 0 uniquement)
 alloc_draughtboard();
 draughtboard_make();
 //draughtboard_render();

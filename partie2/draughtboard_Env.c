@@ -266,7 +266,41 @@ a_3=-1;
      for(int i=0;i<rows;i++){
         for(int j=0;j<cols;j++){
         
-        if(i<4){//Equipe 1
+        if(i<1){//Equipe 1
+            if(j%2==i%2){
+                maze[i][j]=1;
+                
+                L_1[c]=j+i*rows;
+                c++;
+            }
+            else{
+                maze[i][j]=0;
+            }
+        }
+        else if(i>6){//Equipe 0
+            if(j%2==i%2){
+                maze[i][j]=3;
+                
+                L_3[c-nb_pawn]=j+i*cols;
+                c++;
+            }
+            else{
+                maze[i][j]=0;
+            }
+
+        }
+        else{
+            maze[i][j]=0;
+        }
+
+        }
+     }
+ }
+      if(cols==4&&rows==8){
+     for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+        
+        if(i<2){//Equipe 1
             if(j%2==i%2){
                 maze[i][j]=1;
                 
@@ -383,7 +417,7 @@ stepOut.new_row=row_position;
                                                 col_position=col_position+2;
                                                 row_position=row_position+2;
                                                 maze[row_position][col_position]=1;
-                                    tirage.reward=1;
+                                    tirage.reward=4;
                                                 stepOut.end=1;
                                                 stepOut.combo=1;
                                             }
@@ -408,7 +442,7 @@ stepOut.new_row=row_position;
     }
     else if (a==left){
 
-    if(col_position!=0){
+    if(col_position!=0&&row_position<rows-1){
         
         if(maze[row_position+1][col_position-1]==0){
             L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-1+(row_position+1)*cols;
@@ -422,7 +456,7 @@ tirage.reward=1;
         }
         else{
            // printf("Impossible de se déplacer la case n'est pas vide !\n");
-                                                        if(col_position>1&&row_position<8){
+                                                        if(col_position>1&&row_position<rows-2){
                                                             if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
                                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
                                                                 L_3[id_pawn_on_knowncase(col_position-1,row_position+1,0)]=L_3[n_3-1];
@@ -432,7 +466,7 @@ tirage.reward=1;
                                                                 col_position=col_position-2;
                                                                 row_position=row_position+2;
                                                                 maze[row_position][col_position]=1;
-                                                    tirage.reward=1;
+                                                    tirage.reward=4;
                                                                 stepOut.end=1;
                                                                 stepOut.combo=1;
                                                             }
@@ -719,6 +753,16 @@ stepOut.done = 1;
 //draughtboard_render(maze);
 
 stepOut.choice=a;
+if(n_3<=0){
+       stepOut.done = 1;
+    stepOut.end=1;
+    stepOut.reward = 100; 
+}
+if(n_1<=0){
+       stepOut.done = 0;
+    stepOut.end=1;
+    stepOut.reward = -100; 
+}
 if(is_block(team)==1){
     stepOut.done = 1;
     stepOut.end=1;
@@ -744,7 +788,7 @@ if(is_block(team)==1){
     stepOut.new_row = state_row; 
 //printf("Ligne : %d Colonne : %d\n",state_row,state_col);*/
 
-  //printf("en fait non !\n");
+ // printf("en fait non !\n");
 
    return stepOut;
 }
