@@ -7,10 +7,10 @@ void alloc_draughtboard(){
      for(int i=0; i<rows; i++) {
          maze[i] = malloc(cols * sizeof(int*));
      }
-     L_1 = malloc(20*sizeof(int));
-     L_3 = malloc(20*sizeof(int));
-     attaquable_1 = malloc(20*sizeof(int));
-     attaquable_3 = malloc(20*sizeof(int));
+     L_1 = malloc(nb_pawn*sizeof(int));
+     L_3 = malloc(nb_pawn*sizeof(int));
+     attaquable_1 = malloc(nb_pawn*sizeof(int));
+     attaquable_3 = malloc(nb_pawn*sizeof(int));
 }
 
 
@@ -217,7 +217,7 @@ if(x_new<x_old){
 }
 void draughtboard_make(){
 
-for(int i=0;i<20;i++){
+for(int i=0;i<nb_pawn;i++){
     attaquable_1[i]=-1;
     attaquable_3[i]=-1;
 }
@@ -226,6 +226,7 @@ a_3=-1;
     n_3=nb_pawn;
     n_1=nb_pawn;
      int c=0;
+     if(cols==10&&rows==10){
      for(int i=0;i<10;i++){
         for(int j=0;j<10;j++){
         
@@ -258,7 +259,43 @@ a_3=-1;
 
         }
      }
+ }
 
+
+     if(cols==8&&rows==8){
+     for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+        
+        if(i<4){//Equipe 1
+            if(j%2==i%2){
+                maze[i][j]=1;
+                
+                L_1[c]=j+i*rows;
+                c++;
+            }
+            else{
+                maze[i][j]=0;
+            }
+        }
+        else if(i>5){//Equipe 0
+            if(j%2==i%2){
+                maze[i][j]=3;
+                
+                L_3[c-nb_pawn]=j+i*cols;
+                c++;
+            }
+            else{
+                maze[i][j]=0;
+            }
+
+        }
+        else{
+            maze[i][j]=0;
+        }
+
+        }
+     }
+ }
 }
 
 void L_render(int e){
@@ -336,7 +373,7 @@ stepOut.new_row=row_position;
         }
         else{
           //  printf("Impossible de se déplacer la case n'est pas vide !\n");
-                                                   if(col_position<8&&row_position<8){
+                                                   if(col_position<cols-2&&row_position<rows-2){
                                             if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
                                                 L_3[id_pawn_on_knowncase(col_position+1,row_position+1,0)]=L_3[n_3-1];
@@ -420,7 +457,7 @@ tirage.reward=1;
     }
         else if (a==eat_left){
 
-    if(col_position>1&&row_position<8){
+    if(col_position>1&&row_position<rows-2){
         if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
             L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
             L_3[id_pawn_on_knowncase(col_position-1,row_position+1,0)]=L_3[n_3-1];
@@ -449,7 +486,7 @@ tirage.reward=1;
     }
         else if (a==eat_right){
 
-    if(col_position<8&&row_position<8){
+    if(col_position<cols-2&&row_position<rows-2){
         if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
             L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
             L_3[id_pawn_on_knowncase(col_position+1,row_position+1,0)]=L_3[n_3-1];
@@ -476,7 +513,7 @@ tirage.reward=1;
         } 
     }
 
-if(row_position==9){
+if(row_position==rows-1){
 stepOut.reward = 10;
 stepOut.done = 1;
 }
@@ -518,7 +555,7 @@ stepOut.done = 1;
 
 
 
-            if(col_position<8&&row_position>1){
+            if(col_position<cols-1&&row_position>1){
                 if(maze[row_position-1][col_position+1]==1&&maze[row_position-2][col_position+2]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position-2)*cols;
                     L_1[id_pawn_on_knowncase(col_position+1,row_position-1,0)]=L_1[n_1-1];
@@ -642,7 +679,7 @@ stepOut.done = 1;
             } 
             }else if (a==eat_right){
 
-            if(col_position<8&&row_position>1){
+            if(col_position<cols-2&&row_position>1){
                 if(maze[row_position-1][col_position+1]==1&&maze[row_position-2][col_position+2]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position-2)*cols;
                     L_1[id_pawn_on_knowncase(col_position+1,row_position-1,0)]=L_1[n_1-1];

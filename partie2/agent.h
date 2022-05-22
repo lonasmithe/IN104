@@ -16,6 +16,7 @@ int** Q;
 int* Test;
 int etat;
 int seuil;
+int deja_vu;
 int etat_p;
 float epsilon;
 float alpha;
