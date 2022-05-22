@@ -7,7 +7,7 @@
 
 int alloc_Q(){
 
-taille_tableau=10000;
+taille_tableau=200000;
 nombre_actions=2*50;
 Q = malloc(sizeof(int*)*taille_tableau);
 
@@ -86,12 +86,18 @@ while(tirage.end==0){
 	//L_render(e);
 	col_rand=(stockage%(cols));
 	row_rand=(stockage-(stockage%(cols)))/cols;
+	if(n_operation>seuil){
+		printf("Rentrons en action !!!!!!!!!!!!!\n");
+		col_rand=col_playable;
+		row_rand=row_playable;
+		action_rand=move_playable;
+	}
 	tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
 	n_operation++;
 	choix=action_rand+2*(col_rand/2+row_rand*5);
 }
 
-printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n_operation);
+//printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n_operation);
 n_operation=0;
 }
 void greedy_method(){
@@ -142,7 +148,7 @@ victoire=0;
 egalite=0;
 tirage.done=0;
 n_iter=0;
-n_boucle=100;
+n_boucle=1000;
 
 
 	while(n_iter<n_boucle){
@@ -161,10 +167,10 @@ n_boucle=100;
 		}
 		etat=etat_p;
 		actualise_etat();
-		printf("etat = %d choice = %d\n",etat, choix);
-		draughtboard_render(maze);
+		//printf("etat = %d choice = %d\n",etat, choix);
+		//draughtboard_render(maze);
 		
-printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
+//printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
 Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p));
 if(tirage.done!=1){
 
@@ -223,6 +229,9 @@ gammma=0.4;
 nb_pawn=20;
     n_3=nb_pawn;
     n_1=nb_pawn;
+    n_position_reconnu=0;
+    n_passage_dans_le_dico=0;
+    seuil=100; // nombre de coup au bout duquel on va jouer un coup possible donnée par is block (valable pour l'équipe 0 uniquement)
 alloc_draughtboard();
 draughtboard_make();
 //draughtboard_render();
@@ -245,7 +254,10 @@ printf("%d\n",e);
 create_storage();
 training();
 
-draughtboard_render(maze);
+
+//draughtboard_render(maze);
+
+printf("Sur %d situations on en a reconnu %d",n_passage_dans_le_dico,n_position_reconnu);
 
 free_storage();
 printf("Ce free s'est bien passé\n");

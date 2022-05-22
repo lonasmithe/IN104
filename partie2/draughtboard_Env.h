@@ -23,7 +23,11 @@ int state_col;
 int goal_row;
 int goal_col;
 int nb_pawn;
-
+int row_playable;
+int col_playable;
+int move_playable;
+int n_passage_dans_le_dico;
+int n_position_reconnu;
 /*enum terrain{
     unknown,
     wall,

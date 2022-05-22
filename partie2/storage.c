@@ -4,7 +4,7 @@
 
 void create_storage(){
 
-n_position=10000;
+n_position=200000;
 curseur=0;
 
 	storage = malloc(n_position * sizeof(int*));
@@ -44,12 +44,13 @@ for(int i=0; i<rows; i++) {
 
 int find_position(int**T){
 
-
+n_passage_dans_le_dico++;
 for(int n=0;n<curseur;n++){
 	here=1;
 	for(int i=0; i<rows; i++) {
          for(int j=0; j<cols; j++) {
          if(storage[n][i][j]!=T[i][j]){
+
          	here=0;
 break;
          }
@@ -59,6 +60,7 @@ break;
 
      }
      if(here==1){
+        n_position_reconnu++;
      	return n;
      }
 }

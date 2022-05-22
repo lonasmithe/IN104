@@ -71,37 +71,53 @@ void add_attaquable(int x, int y, int e){
 }
 
 int is_block(int e){
-    printf("Nous sommes à la %d opérations",n_operation);
+    //printf("Nous sommes à la %d opérations et c'est à %d de jouer\n",n_operation,e);
     int i;
     int j;
 
+/*for(int i=0;i<20;i++){
+        printf("%d ",L_1[i]);
+    }printf("\n");
+
+
+    for(int i=0;i<20;i++){
+        printf("%d ",L_3[i]);}
+    printf("\n N_1=%d et N_3=%d\n",n_1,n_3);
+*/
 if(e==1){
     for(int k=0;k<n_1;k++){
 
     i=(L_1[k]%(cols));///colonne
     j=(L_1[k]-(L_1[k]%(cols)))/cols; //ligne
+           row_playable=j;
+            col_playable=i;
    if(maze[j][i]==1){                if(i>1&&j<rows-2){
         if(maze[j+1][i-1]==3&&maze[j+2][i-2]==0){
-            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+           // printf("Ouf le pion %d en %d ; %d peut manger à gauche\n",k,i,j);
+            move_playable=0;
             return 0;
+
         }
         }
         if(i<cols-2&&j<rows-2){
         if(maze[j+1][i+1]==3&&maze[j+2][i+2]==0){
+            move_playable=1;
            
-           printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+         //  printf("Ouf le pion %d en %d ; %d peut manger à droite\n",k,i,j);
            return 0;
         }
         }
         if(i<cols-1&&j<rows-1){
         if(maze[j+1][i+1]==0){
-            printf("Ouf le pion en %d ; %d peut se déplacer à droite\n",i+1,j+1);
+            move_playable=1;
+         //   printf("Ouf le pion %d en %d ; %d peut se déplacer à droite\n",k,i,j);
            return 0;
         }
         }
         if(i>0&&j<rows-1){
         if(maze[j+1][i-1]==0){
-            printf("Ouf le pion en %d ; %d peut se déplacer à gauche \n",i,j);
+            move_playable=0;
+        //    printf("Ouf le pion %d en %d ; %d peut se déplacer à gauche \n",k,i,j);
             return 0;
         }
         }}
@@ -115,28 +131,35 @@ if(e==0){
 
     i=(L_3[k]%(cols));
     j=(L_3[k]-(L_3[k]%(cols)))/cols;
+           row_playable=j;
+            col_playable=i;
     if(maze[j][i]==3){
                         if(i>1&&j>1){
         if(maze[j-1][i-1]==1&&maze[j-2][i-2]==0){
-            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+           // printf("Ouf le pion en %d ; %d peut manger à gauche ahah\n",i,j);
+     
+            move_playable=0;
             return 0;
         }
         }
         if(i<cols-2&&j>1){
         if(maze[j-1][i+1]==1&&maze[j-2][i+2]==0){
-            printf("Ouf le pion en %d ; %d peut manger\n",i,j);
+            move_playable=1;
+         //   printf("Ouf le pion en %d ; %d peut manger à droite ahah\n",i,j);
            return 0;
         }
         }
                     if(i>0&&j>0){
         if(maze[j-1][i-1]==0){
-            printf("Ouf le pion en %d ; %d peut se deplacer\n",i,j);
+            move_playable=0;
+          //  printf("Ouf le pion en %d ; %d peut se deplacer ahah\n",i,j);
             return 0;
         }
         }
         if(i<cols-1&&j>0){
         if(maze[j-1][i+1]==0){
-            printf("Ouf le pion en %d ; %d peut se deplacer\n",i,j);
+            move_playable=1;
+           // printf("Ouf le pion en %d ; %d peut se deplacer ahah\n",i,j);
            return 0;
         }
         }
@@ -292,7 +315,7 @@ envOutput draughtboard_step(action a,int col_position,int row_position,int team)
     stepOut.new_col=col_position;
 stepOut.new_row=row_position;
 
-printf("Au tour de la team %d de jouer",team);
+//printf("Au tour de la team %d de jouer",team);
 
 
 
@@ -312,7 +335,7 @@ printf("Au tour de la team %d de jouer",team);
             tirage.reward=1;
         }
         else{
-            printf("Impossible de se déplacer la case n'est pas vide !\n");
+          //  printf("Impossible de se déplacer la case n'est pas vide !\n");
                                                    if(col_position<8&&row_position<8){
                                             if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
@@ -327,20 +350,20 @@ printf("Au tour de la team %d de jouer",team);
                                                 stepOut.end=1;
                                                 stepOut.combo=1;
                                             }
-                                            else{           printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                                            else{      //     printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
                                      tirage.reward=-1;
                                                     stepOut.end=0;
                                                 }   
 
                                             }
                                         else{
-                                        printf("Trop proche du bord\n");
+                                       // printf("Trop proche du bord\n");
                                                 stepOut.end=0;
                                                 tirage.reward=-5;
                                             } 
         }
     }else{
-        printf("Trop proche du bord\n");
+      //  printf("Trop proche du bord\n");
         stepOut.end=0;
         tirage.reward=-5;
       }
@@ -361,7 +384,7 @@ tirage.reward=1;
             stepOut.end=1;
         }
         else{
-            printf("Impossible de se déplacer la case n'est pas vide !\n");
+           // printf("Impossible de se déplacer la case n'est pas vide !\n");
                                                         if(col_position>1&&row_position<8){
                                                             if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
                                                                 L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
@@ -377,21 +400,21 @@ tirage.reward=1;
                                                                 stepOut.combo=1;
                                                             }
                                                             else{
-                                                                printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                                                           //     printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
                                                                     stepOut.end=0;
                                                                     tirage.reward=-1;
                                                                 }   
 
                                                             }
                                                         else{
-                                                        printf("Trop proche du bord\n");
+                                                      //  printf("Trop proche du bord\n");
                                                         tirage.reward=-5;
                                                                 stepOut.end=0;
                                                             } 
         }
     }
     else{
-    printf("Trop proche du bord\n");
+   // printf("Trop proche du bord\n");
         stepOut.end=0;
     }  
     }
@@ -412,14 +435,14 @@ tirage.reward=1;
             stepOut.combo=1;
         }
         else{
-            printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+           // printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
                 stepOut.end=0;
                 tirage.reward=-1;
             }   
 
         }
     else{
-    printf("Trop proche du bord\n");
+  //  printf("Trop proche du bord\n");
     tirage.reward=-5;
             stepOut.end=0;
         } 
@@ -440,14 +463,14 @@ tirage.reward=1;
             stepOut.end=1;
             stepOut.combo=1;
         }
-        else{           printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+        else{         //  printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
  tirage.reward=-1;
                 stepOut.end=0;
             }   
 
         }
     else{
-    printf("Trop proche du bord\n");
+  //  printf("Trop proche du bord\n");
             stepOut.end=0;
             tirage.reward=-5;
         } 
@@ -458,7 +481,7 @@ stepOut.reward = 10;
 stepOut.done = 1;
 }
 }else{
-    if(team==1){printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
+    if(team==1){//printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
     tirage.reward=-2;}
 }
 
@@ -488,7 +511,7 @@ stepOut.done = 1;
                 tirage.reward=1;
             }
             else{
-                printf("Impossible de se déplacer la case n'est pas vide !\n");
+                //printf("Impossible de se déplacer la case n'est pas vide !\n");
 
 
 
@@ -508,14 +531,14 @@ stepOut.done = 1;
         tirage.reward=1;
                     stepOut.end=1;
                 }
-                else{           printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                else{       //    printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
          tirage.reward=-1;
                         stepOut.end=0;
                     }   
 
                 }
             else{
-            printf("Trop proche du bord\n");
+        //    printf("Trop proche du bord\n");
             tirage.reward=-5;
                     stepOut.end=0;
                 } 
@@ -527,7 +550,7 @@ stepOut.done = 1;
                 }
             }else{
                 stepOut.end=0;
-                printf("Trop proche du bord\n");
+                //printf("Trop proche du bord\n");
                 tirage.reward=-5;
               }
 
@@ -537,7 +560,7 @@ stepOut.done = 1;
             if(col_position!=0){
                 if(maze[row_position-1][col_position-1]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-1+(row_position-1)*cols;
-                    printf("%d\n",maze[row_position-1][cols-1]);
+                   // printf("%d\n",maze[row_position-1][cols-1]);
                     maze[row_position][col_position]=0;
                     col_position=col_position-1;
                     row_position=row_position-1;
@@ -545,34 +568,34 @@ stepOut.done = 1;
         tirage.reward=1;
                     stepOut.end=1;
                 }
-                else{printf("Impossible de se déplacer la case n'est pas vide !\n");
+                else{//printf("Impossible de se déplacer la case n'est pas vide !\n");
                     
 
 
 
 
 
-            if(col_position<8&&row_position>1){
-                if(maze[row_position-1][col_position+1]==1&&maze[row_position-2][col_position+2]==0){
-                    L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position-2)*cols;
-                    L_1[id_pawn_on_knowncase(col_position+1,row_position-1,0)]=L_1[n_1-1];
+            if(col_position>1&&row_position>1){
+                if(maze[row_position-1][col_position-1]==1&&maze[row_position-2][col_position-2]==0){
+                    L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position-2)*cols;
+                    L_1[id_pawn_on_knowncase(col_position-1,row_position-1,0)]=L_1[n_1-1];
                     n_1--;
         maze[row_position][col_position]=0;
-        maze[row_position-1][col_position+1]=0;
-                    col_position=col_position+2;
+        maze[row_position-1][col_position-1]=0;
+                    col_position=col_position-2;
                     row_position=row_position-2;
                     maze[row_position][col_position]=3;
         tirage.reward=1;
                     stepOut.end=1;
                 }
-                else{           printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                else{          // printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
          tirage.reward=-1;
                         stepOut.end=0;
                     }   
 
                 }
             else{
-            printf("Trop proche du bord\n");
+           // printf("Trop proche du bord\n");
             tirage.reward=-5;
                     stepOut.end=0;
                 } 
@@ -587,7 +610,7 @@ stepOut.done = 1;
             else{
             
                 stepOut.end=0;
-                printf("Trop proche du bord\n");
+               // printf("Trop proche du bord\n");
                 tirage.reward=-5;
             }  
             }
@@ -607,13 +630,13 @@ stepOut.done = 1;
                     stepOut.end=1;
                 }
                 else{
-                               printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                           //    printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
          tirage.reward=-1;
                     stepOut.end=0;
                 }
             }
             else{
-            printf("Trop proche du bord\n");
+         //   printf("Trop proche du bord\n");
             tirage.reward=-5;
                 stepOut.end=0;
             } 
@@ -632,14 +655,14 @@ stepOut.done = 1;
         tirage.reward=1;
                     stepOut.end=1;
                 }
-                else{           printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
+                else{       //    printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
          tirage.reward=-1;
                         stepOut.end=0;
                     }   
 
                 }
             else{
-            printf("Trop proche du bord\n");
+           // printf("Trop proche du bord\n");
             tirage.reward=-5;
                     stepOut.end=0;
                 } 
@@ -652,11 +675,11 @@ stepOut.done = 1;
     }
     else{
         if(team==0){
-        printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
+       // printf("S'il y a un pion sur cette case, il n'est pas de votre équipe\n");
         tirage.reward=-2;
     }
 }
-draughtboard_render(maze);
+//draughtboard_render(maze);
 
 stepOut.choice=a;
 if(is_block(team)==1){

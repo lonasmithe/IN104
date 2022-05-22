@@ -15,6 +15,7 @@ enum action choix;
 int** Q;
 int* Test;
 int etat;
+int seuil;
 int etat_p;
 float epsilon;
 float alpha;
