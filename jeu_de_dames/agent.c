@@ -155,7 +155,7 @@ void training() {
   egalite=0;
   tirage.done=0;
   n_iter=0;
-  n_boucle=14000;
+  n_boucle=2000;
 
 
   while (n_iter<n_boucle) {
