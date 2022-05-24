@@ -1,3 +1,5 @@
+//#include <math.h>
+
 #include "td2.h"
 #include "mazeEnv.h"
 
@@ -9,74 +11,15 @@ float max_a_Q(float** Q,int s){
 
 }
 
+void Q_render(float** Q){
 
-
-void Q_render(float** Q){}
-/*	
-	printf("\n");
-    
-	for (int i=0; i<rows; i++) {
-    	
-    		for (int j=0; j< cols; j++){
-		
-			printf(" %.1f ", Q[j+i*cols][1]);
-
-		}
-         
-     		printf("\n");
-	
-	}
-	
-	printf("\n");
-      
-      	for (int i=0; i<rows; i++) {
-		
-		for (int j=0; j< cols; j++){
-             		
-             		printf(" %.1f ", Q[j+i*cols][2]);
-         	
-         	}
-         
-       	printf("\n");
-     	
-     	}
-     	
-     	printf("\n");
-      	
-      	for (int i=0; i<rows; i++) {
-         	
-         	for (int j=0; j< cols; j++){
-             		
-             		printf(" %.1f ", Q[j+i*cols][3]);
-         	
-         	}
-         	
-         	printf("\n");
-     	}
-     	
-     	printf("\n");
-	
-	for (int i=0; i<rows; i++) {
-		
-		for (int j=0; j< cols; j++){
-           
-           		printf(" %.1f ", max_a_Q(Q,j+i*cols));
-           
-         	}
-         	
-	printf("\n");
-	
-	}
-	
 }
-
-*/
 
 
 int taille_tableau;
 int nombre_actions;
 
-// On définit la fonction somme qui va nous permettre d'additionner Q1 et Q2 dans la méthode sarsa
+// On définit la fonction somme qui va nous permettre d'additionner Q1 et Q2 
 
 float** somme(float** Q1, float** Q2, float** Q) {
 	
@@ -87,15 +30,16 @@ float** somme(float** Q1, float** Q2, float** Q) {
 			Q[i][j]= Q1[i][j]+Q2[i][j]; 
 		
 		}
-		
 	}
 	
 	return(Q);
-
+	
 }
 
-// On implemente une fonction pour mettre en place la methode epsilon-greedy
 
+
+
+// On implemente une fonction pour mettre en place la methode epsilon-greedy
 
 int greedy_method(float epsilon,float** Q, int s){
 
@@ -136,7 +80,7 @@ void add_crumbs2(){
      
           for (int j=0; j<cols; j++){
           
-              if (visited[i][j] ==crumb){
+              if (visited[i][j] == crumb){
               
                   maze[i][j] ='.';
               }
@@ -148,6 +92,8 @@ void add_crumbs2(){
      maze[start_row][start_col]= 's';
      
 }
+
+
 
 
 float** training(float** Q,int n_ep,float alpha, float epsilon){
@@ -288,7 +234,7 @@ float** doubletraining(float** Q1, float** Q2, float**Q,int n_ep, float alpha, f
 			// On teste pour savoir si on est sur un état terminal
 			 
 			direction = greedy_method(epsilon,Q,etat);
-			//printf("La direction est %d , on se place en %d\n",direction,etat); 
+			printf("La direction est %d , on se place en %d\n",direction,etat); 
 			
 			// On choisit une action et puis on fait un pas 
 			tirage = maze_step(direction);
@@ -311,7 +257,7 @@ float** doubletraining(float** Q1, float** Q2, float**Q,int n_ep, float alpha, f
 			
 			if(tirage.done==0){etat = etat_p;}
 		
-
+		
 		}
 		
 		printf("On a trouvé le trésor en %d ; %d ce qui nous a valu une récompense de %f et donc le dernier Q[s][a] vaut %f et s = %d et a = %d \n",tirage.new_row,tirage.new_col,recompense,Q[etat][direction],etat,direction);
@@ -335,6 +281,84 @@ float** doubletraining(float** Q1, float** Q2, float**Q,int n_ep, float alpha, f
 }
 
 
+
+int main(){
+	maze_make("maze.txt");
+   init_visited();
+   maze_render();
+   maze_reset();
+
+   srand( time( NULL ) );
+   printf("Ligne %d Colonne %d\n",rows,cols);
+	int nombre_actions = 4; // G D H B 
+	int taille_tableau = rows*cols; // Récupérer cela via le fichier // Si on 
+	printf("taille tableau = %d\n",taille_tableau);
+	float alpha = 0.8; //Valeur choisi au hasard
+	float epsilon = 0.05; //Taux d'apprentissage
+	int n_ep = 20000;
+
+float **Q1 = malloc(sizeof(float*)*taille_tableau);
+printf("ça marche");
+// Ligne 1 Ligne 2 ... Ligne n (chaque ligne fait p colonnes)
+float **Q2 = malloc(sizeof(float*)*taille_tableau);
+float** Q = malloc(sizeof(float*)*taille_tableau);
+	
+printf("Ici ça marche");
+
+//int T[n][n];
+for(int i=0;i<taille_tableau;i++){
+	Q[i] = malloc(sizeof(float)*nombre_actions);
+	Q2[i] = malloc(sizeof(float)*nombre_actions);
+	Q1[i] = malloc(sizeof(float)*nombre_actions); // G D H B 
+	if(Q[i]==NULL){
+	return 1;// exit 1 si fonction
+}
+
+}
+if(Q==NULL){
+	return 1;
+}
+
+
+for(int i=0;i<taille_tableau;i++){
+
+	for(int j=0;j<nombre_actions;j++){
+
+		if(i!=j){
+
+			Q[i][j]=0;Q1[i][j]=0;Q2[i][j]=0; //Initialisation de Q à 0
+		}
+
+	}
+}
+Q = somme(Q1,Q2,Q);
+//	int* S=compute_amounts(T,n);
+//	printf("%d",S[0]);
+
+//entrainement
+printf("Coucou");
+Q = doubletraining(Q1,Q2,Q,n_ep,alpha,epsilon); // Où Q représente le nombre d'épisodes 
+
+epsilon = epsilon+1;
+alpha = alpha +1;
+n_ep = n_ep +1;
+Q_render(Q);
+maze_render();
+for(int i=0;i<taille_tableau;i++){
+
+free(Q[i]);
+}
+
+free(Q);
+
+printf("Je crois bien que c'est fini, est ce que ça a fonctionné ooooooh ?\n\n Henri t'es trop fort !!!");
+// Tableau de tableau
+
+
+}
+
+
+/*
 int main(){
 
 	maze_make("maze.txt");
@@ -420,4 +444,4 @@ int main(){
 	
 	printf("Voici la fin du main");
 	
-}
+}*/
