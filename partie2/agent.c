@@ -155,7 +155,7 @@ void training() {
   egalite=0;
   tirage.done=0;
   n_iter=0;
-  n_boucle=14000;
+  n_boucle=2000;
 
 
   while (n_iter<n_boucle) {
@@ -182,21 +182,25 @@ void training() {
       if (tirage.done!=1) {
 
         if (tirage.end==1) {
+        if(n_iter==n_boucle-1){printf("\n");
+        draughtboard_render(maze);}
           tirage.end=0;
           //actualise_etat();
 
-          act_random(0);        }
+          act_random(0);  
+          if(n_iter==n_boucle-1){
+        draughtboard_render(maze);}      }
 
         actualise_etat();
 
         Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p)); // Vérifier si c'est le bon état;
       }
       //printf()
-      printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n", n_iter, total_position());
-      for (int k=0; k<(nb_pawn+1)*(nb_pawn+1); k++) {
+      //printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n", n_iter, total_position());
+  /*    for (int k=0; k<(nb_pawn+1)*(nb_pawn+1); k++) {
         printf("%d ", T_curseur[k]);
       }
-      printf("\n");
+      printf("\n");*/
 
     }
     if (tirage.reward>0) {
