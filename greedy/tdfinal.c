@@ -11,8 +11,8 @@ float max_a_Q(float** Q,int s){
 
 
 
-void Q_render(float** Q){}
-/*	
+void Q_render(float** Q){
+	
 	printf("\n");
     
 	for (int i=0; i<rows; i++) {
@@ -70,7 +70,7 @@ void Q_render(float** Q){}
 	
 }
 
-*/
+
 
 
 int taille_tableau;
@@ -288,7 +288,7 @@ float** doubletraining(float** Q1, float** Q2, float**Q,int n_ep, float alpha, f
 			// On teste pour savoir si on est sur un état terminal
 			 
 			direction = greedy_method(epsilon,Q,etat);
-			//printf("La direction est %d , on se place en %d\n",direction,etat); 
+			printf("La direction est %d , on se place en %d\n",direction,etat); 
 			
 			// On choisit une action et puis on fait un pas 
 			tirage = maze_step(direction);
@@ -311,7 +311,7 @@ float** doubletraining(float** Q1, float** Q2, float**Q,int n_ep, float alpha, f
 			
 			if(tirage.done==0){etat = etat_p;}
 		
-
+		
 		}
 		
 		printf("On a trouvé le trésor en %d ; %d ce qui nous a valu une récompense de %f et donc le dernier Q[s][a] vaut %f et s = %d et a = %d \n",tirage.new_row,tirage.new_col,recompense,Q[etat][direction],etat,direction);
