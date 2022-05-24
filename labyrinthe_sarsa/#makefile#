@@ -1,0 +1,30 @@
+<<<<<<< HEAD
+prog : dfs.o functions.o mazeEnv.o td2_sarsa.o
+	gcc -o prog dfs.o functions.o mazeEnv.o td2_sarsa.o -lm
+=======
+prog : dfs.o functions.o mazeEnv.o td2.o
+	gcc -o prog dfs.o functions.o mazeEnv.o td2.o -lm
+>>>>>>> fd142800ee1b4273d1cb2510f84680295070dec4
+
+dfs.o : dfs.c mazeEnv.h
+	gcc -c -Wall -Werror -Wfatal-errors dfs.c
+
+functions.o : functions.c functions.h
+	gcc -c -Wall -Werror -Werror -Wfatal-errors functions.c
+
+mazeEnv.o : mazeEnv.c mazeEnv.h 
+	gcc -c -Wall -Werror -Wfatal-errors mazeEnv.c
+
+<<<<<<< HEAD
+td2_sarsa.o : td2_sarsa.c td2.h mazeEnv.h
+	gcc -c -Wall -Werror -Wfatal-errors td2_sarsa.c -lm
+=======
+td2.o : td2.c td2.h mazeEnv.h
+	gcc -c -Wall -Werror -Wfatal-errors td2.c -lm
+
+clean :
+	rm -f prog dfs.o functions.o mazEnv.o td2.o
+>>>>>>> fd142800ee1b4273d1cb2510f84680295070dec4
+
+clean :
+	rm -f prog dfs.o functions.o mazEnv.o td2_sarsa.o
