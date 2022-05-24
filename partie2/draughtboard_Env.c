@@ -266,7 +266,7 @@ a_3=-1;
      for(int i=0;i<rows;i++){
         for(int j=0;j<cols;j++){
         
-        if(i<1){//Equipe 1
+        if(i==2){//Equipe 1
             if(j%2==i%2){
                 maze[i][j]=1;
                 
@@ -277,7 +277,7 @@ a_3=-1;
                 maze[i][j]=0;
             }
         }
-        else if(i>6){//Equipe 0
+        else if(i==5){//Equipe 0
             if(j%2==i%2){
                 maze[i][j]=3;
                 
@@ -489,66 +489,10 @@ tirage.reward=1;
         stepOut.end=0;
     }  
     }
-        else if (a==eat_left){
 
-    if(col_position>1&&row_position<rows-2){
-        if(maze[row_position+1][col_position-1]==3&&maze[row_position+2][col_position-2]==0){
-            L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position+2)*cols;
-            L_3[id_pawn_on_knowncase(col_position-1,row_position+1,0)]=L_3[n_3-1];
-            n_3--;
-maze[row_position][col_position]=0;
-maze[row_position+1][col_position-1]=0;
-            col_position=col_position-2;
-            row_position=row_position+2;
-            maze[row_position][col_position]=1;
-tirage.reward=1;
-            stepOut.end=1;
-            stepOut.combo=1;
-        }
-        else{
-           // printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
-                stepOut.end=0;
-                tirage.reward=-1;
-            }   
-
-        }
-    else{
-  //  printf("Trop proche du bord\n");
-    tirage.reward=-5;
-            stepOut.end=0;
-        } 
-    }
-        else if (a==eat_right){
-
-    if(col_position<cols-2&&row_position<rows-2){
-        if(maze[row_position+1][col_position+1]==3&&maze[row_position+2][col_position+2]==0){
-            L_1[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position+2)*cols;
-            L_3[id_pawn_on_knowncase(col_position+1,row_position+1,0)]=L_3[n_3-1];
-            n_3--;
-maze[row_position][col_position]=0;
-maze[row_position+1][col_position+1]=0;
-            col_position=col_position+2;
-            row_position=row_position+2;
-            maze[row_position][col_position]=1;
-tirage.reward=1;
-            stepOut.end=1;
-            stepOut.combo=1;
-        }
-        else{         //  printf("Impossible de manger soit la case d'arrivé est occupé soit il n'y a rien à manger\n");
- tirage.reward=-1;
-                stepOut.end=0;
-            }   
-
-        }
-    else{
-  //  printf("Trop proche du bord\n");
-            stepOut.end=0;
-            tirage.reward=-5;
-        } 
-    }
 
 if(row_position==rows-1){
-stepOut.reward = 10;
+stepOut.reward = 1000;
 stepOut.done = 1;
 }
 }else{
@@ -592,7 +536,7 @@ stepOut.done = 1;
             if(col_position<cols-1&&row_position>1){
                 if(maze[row_position-1][col_position+1]==1&&maze[row_position-2][col_position+2]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position-2)*cols;
-                    L_1[id_pawn_on_knowncase(col_position+1,row_position-1,0)]=L_1[n_1-1];
+                    L_1[id_pawn_on_knowncase(col_position+1,row_position-1,1)]=L_1[n_1-1];
                     n_1--;
         maze[row_position][col_position]=0;
         maze[row_position-1][col_position+1]=0;
@@ -649,7 +593,7 @@ stepOut.done = 1;
             if(col_position>1&&row_position>1){
                 if(maze[row_position-1][col_position-1]==1&&maze[row_position-2][col_position-2]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position-2+(row_position-2)*cols;
-                    L_1[id_pawn_on_knowncase(col_position-1,row_position-1,0)]=L_1[n_1-1];
+                    L_1[id_pawn_on_knowncase(col_position-1,row_position-1,1)]=L_1[n_1-1];
                     n_1--;
         maze[row_position][col_position]=0;
         maze[row_position-1][col_position-1]=0;
@@ -716,7 +660,7 @@ stepOut.done = 1;
             if(col_position<cols-2&&row_position>1){
                 if(maze[row_position-1][col_position+1]==1&&maze[row_position-2][col_position+2]==0){
                     L_3[id_pawn_on_knowncase(col_position,row_position,team)]=col_position+2+(row_position-2)*cols;
-                    L_1[id_pawn_on_knowncase(col_position+1,row_position-1,0)]=L_1[n_1-1];
+                    L_1[id_pawn_on_knowncase(col_position+1,row_position-1,1)]=L_1[n_1-1];
                     n_1--;
         maze[row_position][col_position]=0;
         maze[row_position-1][col_position+1]=0;
@@ -739,7 +683,7 @@ stepOut.done = 1;
                 } 
             }
             if(row_position==0){
-        stepOut.reward = -10;
+        stepOut.reward = -1000;
         stepOut.done = 1;
         }
 
@@ -768,6 +712,15 @@ if(is_block(team)==1){
     stepOut.end=1;
     stepOut.reward = -9;
 }
+if(n_1<=0){
+    stepOut.done = 1;
+    stepOut.end=1;
+    stepOut.reward = -1000;
+}if(n_3<=0){
+    stepOut.done = 1;
+    stepOut.end=1;
+    stepOut.reward = 1000;
+}
 
     //à modifier
     /*if((state_row == goal_row) && (state_col == goal_col)){
@@ -788,7 +741,7 @@ if(is_block(team)==1){
     stepOut.new_row = state_row; 
 //printf("Ligne : %d Colonne : %d\n",state_row,state_col);*/
 
- // printf("en fait non !\n");
+  //printf("en fait non !\n");
 
    return stepOut;
 }
