@@ -39,7 +39,7 @@ free(storage);
 printf("Succès\n");
 }
 int total_position(){
-    int total;
+    int total=0;
    for(int k=0;k<(nb_pawn+1)*(nb_pawn+1);k++){
 total=total+T_curseur[k];
    } return total;
@@ -57,7 +57,7 @@ for(int i=0; i<rows; i++) {
 }
 void fill_storage2(){
 
-for(int i=0; i<(nb_pawn+1)*2; i++) {
+for(int i=0; i<nb_pawn*2; i++) {
 if(i<nb_pawn){
 storage2[(n_1)*50000+(n_3)*5000+T_curseur[(n_1)*(nb_pawn+1)+n_3]][i]=L_1[i];
 }else{
@@ -95,8 +95,12 @@ return -1;
 }
 
 int find_position2(){
-
-//printf("\n\n");
+    sort_L();
+/*L_render(1);
+printf(" n_1 =%d\n",n_1);
+L_render(0);
+printf(" n_3 =%d\n",n_3);
+//printf("\n\n");*/
 n_passage_dans_le_dico++;
 
 //printf("Le bug se situe ici\n");

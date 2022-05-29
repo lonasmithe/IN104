@@ -9,7 +9,7 @@
 
   taille_tableau = 500000;
   nombre_actions=2*rows*cols/2;
-  Q = malloc(sizeof(int*)*taille_tableau);
+  Q = malloc(sizeof(float*)*taille_tableau);
 
   /*Test = malloc(sizeof(int)*5);
    Test[1]=Test[2];
@@ -23,9 +23,11 @@
     return 1;// exit 1 si fonction
   }
   for (int i=0; i<taille_tableau; i++) {
-    Q[i] = malloc(sizeof(int)*nombre_actions);
+    Q[i] = malloc(sizeof(float)*nombre_actions);
     if (Q[i]==NULL) {
       return 1;// exit 1 si fonction
+    }else{
+      for(int k=0;k<nombre_actions;k++){Q[i][k]=0;}
     }
   }
   if (Q==NULL) {
@@ -60,21 +62,21 @@ void init_Q() {
 float max_a_Q(int e) {
   int h = rand()%nombre_actions;
   float ref = Q[e][h];
-  choix = h;
+  //enum action choix2 = h;
   //printf("J'aurais pu avoir ");
   for (int i=0; i<nombre_actions; i++) {
     //  printf("%f ou",Q[s][i]);
     if (Q[e][i]>ref) {
 
       ref = Q[e][i];
-      choix = i;
+      //choix2 = i;
     }
   }
   return ref;
 }
 
 void act_random(int e) {
-  //printf("Le bug se situe ici\n");
+ // printf("Nous avons déterminé le coup avec la méthode act_random\n");
   n_operation=0;
   int stockage;
 
@@ -94,7 +96,7 @@ void act_random(int e) {
     }
     tirage=draughtboard_step((enum action)(action_rand), col_rand, row_rand, e);
     n_operation++;
-    choix=action_rand+2*(col_rand/2+row_rand*cols/2);//Modifier le cols/2 valait 5
+    choix=action_rand+2*((col_rand-(row_rand%2))/2+row_rand*cols/2);//Modifier le cols/2 valait 5
   }
 
   //printf("Le pion situé en (%d,%d) fait le choix : %d , case occupé par %d en %d opérations\n",tirage.new_col,tirage.new_row,tirage.choice,maze[tirage.new_row][tirage.new_col],n_operation);
@@ -110,7 +112,7 @@ void greedy_method() {
   //enum action direction;
   if (rand()%101<epsilon*100) {
 
-
+//printf("Laissons faire le hasard\n");
     choix=-1;
     //return (enum action)(rand() % number_actions);
   } else {
@@ -122,11 +124,14 @@ void greedy_method() {
     for (int i=0; i<nombre_actions; i++) {
       //  printf("%f ou",Q[s][i]);
       if (Q[etat][i]>ref) {
-
+//printf("TRoooooooooooop fort\n");
         ref = Q[etat][i];
         choix = i;
       }
+
     }
+    
+  //  printf("La valeur de ref = %f et choix = %d et etat = %d",ref, choix,etat);
     //return direction;//renvoie une action
 
 
@@ -150,6 +155,7 @@ void actualise_etat() {
   }
   //printf("EN FAIT NON\n");
 }
+
 void training() {
   victoire=0;
   egalite=0;
@@ -157,27 +163,33 @@ void training() {
   n_iter=0;
   n_boucle=2000;
 
-
   while (n_iter<n_boucle) {
-    etat=0;
-    etat_p=0;
+    etat=220000;
+    etat_p=220000;
+    n=0;
     while (tirage.done==0) {
-
+n++;
+actualise_etat();
       //draughtboard_render(maze);
       etat=etat_p;
 
       greedy_method();
       if (choix!=-1) {
         //printf("L'action sera %d la col %d sera la ligne sera %d\n",choix%2,((choix-(choix%2))/2)%5,((choix-(choix-(choix%2))/2)%5)/10);
-        tirage=draughtboard_step(choix%2, ((choix-(choix-(choix%2))/2)%(cols/2)/cols)%2+2*((choix-(choix%2))/2)%(cols/2), ((choix-(choix-(choix%2))/2)%(cols/2))/cols, 1);//Ligne douteuse suite au changement
+         choix=action_rand+2*((col_rand-(row_rand%2))/2+row_rand*cols/2);//Modifier le cols/2 valait 5
+
+        int row_e = (((choix-choix%2)/2)-(((choix-choix%2)/2)%(cols/2)))/(cols/2);
+        int col_e = (((choix-choix%2)/2)%(cols/2))*2 + row_e%2;
+        tirage=draughtboard_step(choix%2, row_e,col_e, 1);//Ligne douteuse suite au changement
       } else {
         act_random(1);
       }
 
 
+
       //printf("etat = %d choice = %d\n",etat, choix);
       //draughtboard_render(maze);
-      //printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
+     // printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n",n_iter,curseur);
         
       if (tirage.done!=1) {
 
@@ -185,24 +197,34 @@ void training() {
           tirage.end=0;
           //actualise_etat();
 
-          act_random(0);        }
+          act_random(0);       
+          actualise_etat();
+          
+          Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p)); //printf("Q vaut %.2f \n",Q[etat][choix]);
+          }else{
 
-        actualise_etat();
+            Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward); 
+          }
 
-        Q[etat][choix]=Q[etat][choix]*(1-alpha) + alpha*(tirage.reward+gammma*max_a_Q(etat_p)); // Vérifier si c'est le bon état;
-      }
+
+
+         //printf("ou bien Q vaut %.2f \n",Q[etat][choix]);
+     //    printf("Lors de l'ep %d et du coup %d on a Q[%d][%d] = %.2f max_a_Q[%d] = %f et reward = %.2f \n",n_iter,n,etat,choix,Q[etat][choix],etat_p,max_a_Q(etat_p),tirage.reward);
+      
+       }
       //printf()
-      printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n", n_iter, total_position());
-      for (int k=0; k<(nb_pawn+1)*(nb_pawn+1); k++) {
+     //  draughtboard_render(maze);
+     // printf("On est rendu au %d épisode, on a %d positions dans notre stockage\n", n_iter, total_position());
+      /*for (int k=0; k<(nb_pawn+1)*(nb_pawn+1); k++) {
         printf("%d ", T_curseur[k]);
       }
-      printf("\n");
+      printf("\n");*/
 
     }
     if (tirage.reward>0) {
       victoire++;
     }
-    if (tirage.reward==-9) {
+    if (tirage.reward==-7) {
       egalite++;
     }
     if (n_iter%4000==0) {
@@ -240,9 +262,9 @@ int main() {
   srand( time( NULL ) );
   rows=8;
   cols=8;
-  epsilon=0.5;
+  epsilon=0.05;
   alpha=0.8;
-  gammma=0.9;
+  gammma=0.7;
   //nb_pawn=cols/2;
   if (cols==8&&rows==8) {
     nb_pawn=4;
@@ -261,18 +283,6 @@ int main() {
   seuil=40; // nombre de coup au bout duquel on va jouer un coup possible donnée par is block (valable pour l'équipe 0 uniquement)
   alloc_draughtboard();
   draughtboard_make();
-  //draughtboard_render();
-  //struct envOutput tirage;
-  /*tirage = draughtboard_step((enum action)(0),3,3,1);
-   tirage = draughtboard_step((enum action)(0),4,6,0);
-   tirage = draughtboard_step((enum action)(3),2,4,1);
-   tirage = draughtboard_step((enum action)(2),5,7,0);*/
-  //tirage = draughtboard_step((enum action)(3),5,7,0);
-  //tirage = draughtboard_step((enum action)(1),7,5,0);
-  //tirage = draughtboard_step((enum action)(0),0,2,1);
-
-  //draughtboard_render();
-
 
   int e = alloc_Q();
   printf("%d\n", e);
@@ -280,6 +290,21 @@ int main() {
 
   create_storage();
   training();
+/*
+for(int k=0;k<nombre_actions;k++){
+  printf("%.2f ",Q[220000][k]);
+  if(k%8==7){
+    printf("\n");
+  }
+}
+printf("\n\n");
+for(int k=0;k<nombre_actions;k++){
+  printf("%.2f ",Q[220001][k]);
+  if(k%8==7){
+    printf("\n");
+  }
+}*/
+
 
 
   //draughtboard_render(maze);
@@ -290,24 +315,7 @@ int main() {
   printf("Ce free s'est bien passé\n");
 
   printf("%d", e);
-  //draughtboard_render();
-  /*act_random(0);
-   draughtboard_render();
-   act_random(1);
-   draughtboard_render();
-   act_random(0);
-   draughtboard_render();
-   act_random(1);
-   draughtboard_render();
-   act_random(0);
-   draughtboard_render();
-   act_random(1);
-   draughtboard_render();
-   act_random(0);
-   draughtboard_render();
-   act_random(1);
-   //printf("%f\n",tirage.reward);
-   draughtboard_render();*/
+
   free_Q();
 
   printf("Ce free s'est aussi bien passé\n");

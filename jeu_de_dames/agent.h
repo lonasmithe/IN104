@@ -12,7 +12,7 @@ int taille_tableau;
 int nombre_actions;
 struct envOutput tirage;
 enum action choix;
-int** Q;
+float** Q;
 int* Test;
 int etat;
 int seuil;
@@ -24,6 +24,7 @@ float gammma;
 int action_rand,col_rand,row_rand;
 int n_boucle;
 int n_iter;
+int n;
 
 int alloc_Q();
 void free_Q();

@@ -80,6 +80,8 @@ void L_render(int e);
 
 int is_block(int e);
 
+void sort_L();
+
 void update_attaquable_move(int x_new,int y_new,int x_old, int y_old,int e);
 
 envOutput draughtboard_step(action a, int col_position, int row_position, int team); 
